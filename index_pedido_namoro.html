@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Especial ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#ff758c,#ff7eb3,#ffb199);overflow:hidden}
+#hearts{position:fixed;inset:0;pointer-events:none}
+.container{width:90%;max-width:560px;background:rgba(255,255,255,.15);backdrop-filter:blur(18px);border-radius:28px;padding:35px;color:#fff;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.2);animation:netflixIn .7s ease;z-index:2}
+.hidden{display:none}
+img{width:180px;height:180px;border-radius:50%;object-fit:cover;border:5px solid #fff;margin-bottom:20px}
+input{width:100%;padding:14px;border:none;border-radius:12px;margin:15px 0}
+button{border:none;border-radius:12px;padding:14px 28px;cursor:pointer;font-weight:700}
+.btn{background:#fff;color:#ff4d8d}
+.option{display:block;width:100%;margin-top:10px}
+.buttons{display:flex;justify-content:center;gap:20px;margin-top:25px}
+#yes{background:#4CAF50;color:white}
+#no{background:#ff4d6d;color:white}
+@keyframes netflixIn{from{opacity:0;transform:scale(.85) translateY(25px)}to{opacity:1;transform:scale(1)}}
+@keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-120vh) rotate(360deg);opacity:0}}
+.heart-float{position:absolute;bottom:-40px}
+.final{line-height:1.8;font-size:22px}
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<audio id="bgMusic" loop>
+<source src="NossaPraia.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="login">
+<img src="Gabriel e Giovanna.jpeg" alt="Foto">
+<h1>Olá Princesa ❤️</h1>
+<div id="contador"></div>
+<p>A dica da senha é a data do nosso primeiro encontro ✨</p>
+<input type="password" id="password" placeholder="Digite a senha">
+<button class="btn" onclick="checkPassword()">Entrar 💕</button>
+</div>
+
+<div class="container hidden" id="quiz">
+<h1>Quiz do Amor 💖</h1>
+<div class="quiz-question"></div>
+</div>
+
+<div class="container hidden" id="proposal">
+<h1>💖 Quer namorar comigo? 💖</h1>
+<p style="margin-top:15px">Prometo te fazer feliz todos os dias ❤️</p>
+<div class="buttons">
+<button id="yes">SIM ❤️</button>
+<button id="no">NÃO 😅</button>
+</div>
+</div>
+
+<div class="container hidden" id="success">
+<div class="final">
+❤️ AGORA É OFICIAL ❤️<br><br>
+Desde o dia 26 de abril minha vida ficou muito mais feliz.<br><br>
+Nosso primeiro beijo em 08/05 foi um momento que nunca vou esquecer. Talvez a data kksksk<br><br>
+Nosso primeiro encontro no boliche e depois no shopping foi perfeito.<br><br>
+E o dia 30/05 com certeza ficará marcado para sempre na minha memória. Por motivos obvios ksksks<br><br>
+Eu te amo muito e quero viver muitos outros momentos ao seu lado. ✨❤️
+</div>
+</div>
+
+<script>
+document.addEventListener("click",()=>{
+ const m=document.getElementById("bgMusic");
+ m.volume=5.5;
+ if(m.paused)m.play();
+},{once:true});
+
+function atualizarContador(){
+ const inicio=new Date("2025-04-26");
+ const hoje=new Date();
+ const dias=Math.floor((hoje-inicio)/(1000*60*60*24));
+ document.getElementById("contador").innerHTML=`💕 Estamos escrevendo nossa história há <b>${dias}</b> dias`;
+}
+atualizarContador();
+
+setInterval(()=>{
+ let h=document.createElement("div");
+ h.className="heart-float";
+ h.innerHTML="❤️";
+ h.style.left=Math.random()*100+"%";
+ h.style.fontSize=(15+Math.random()*25)+"px";
+ h.style.animation="floatUp "+(5+Math.random()*5)+"s linear forwards";
+ document.getElementById("hearts").appendChild(h);
+ setTimeout(()=>h.remove(),10000);
+},500);
+
+function show(a,b){a.classList.add("hidden");b.classList.remove("hidden");}
+
+function checkPassword(){
+ if(document.getElementById("password").value==="0805"){
+   show(login,quiz);
+   renderQuestion();
+ } else alert("Senha incorreta ❤️");
+}
+
+const perguntas=[
+{pergunta:"💋 Quando foi nosso primeiro beijo?",correta:"08/05",opcoes:["05/05","08/05","12/05"]},
+{pergunta:"🎳 Onde foi nosso primeiro encontro?",correta:"Boliche e depois shopping",opcoes:["Cinema e jantar","Boliche e depois shopping","Parque e sorveteria"]},
+{pergunta:"✨ Qual foi o melhor dia que passamos juntos?",correta:"30/05",opcoes:["08/05","18/05","30/05"]}
+];
+
+let atual=0;
+
+function responder(op){
+ if(op!==perguntas[atual].correta){
+   alert("Hmmm... essa não 😅❤️");
+   return;
+ }
+ atual++;
+ renderQuestion();
+}
+
+function renderQuestion(){
+ if(atual>=perguntas.length){
+   show(quiz,proposal);
+   return;
+ }
+ let q=perguntas[atual];
+ document.querySelector(".quiz-question").innerHTML=
+ `<h3>${q.pergunta}</h3>`+
+ q.opcoes.map(o=>`<button class="btn option" onclick="responder('${o.replace(/'/g,"\\'")}')">${o}</button>`).join("");
+}
+
+const noBtn=document.getElementById("no");
+noBtn.addEventListener("mouseover",()=>{
+ noBtn.style.position="fixed";
+ noBtn.style.left=Math.random()*(window.innerWidth-150)+"px";
+ noBtn.style.top=Math.random()*(window.innerHeight-80)+"px";
+});
+
+document.getElementById("yes").addEventListener("click",()=>{
+ show(proposal,success);
+ const end=Date.now()+6000;
+ (function frame(){
+  confetti({particleCount:4,angle:60,spread:70,origin:{x:0}});
+  confetti({particleCount:4,angle:120,spread:70,origin:{x:1}});
+  if(Date.now()<end) requestAnimationFrame(frame);
+ })();
+});
+</script>
+</body>
+</html>
